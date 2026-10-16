@@ -1,0 +1,549 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<meta name="theme-color" content="#07152f">
+
+<title>AI Signal Scanner — Mobile Board</title>
+
+<style>
+
+:root{--bg:#061126;--panel:#0c1d3b;--panel2:#10264b;--line:#203d69;--cyan:#39d7ff;--blue:#2878ff;--text:#edf5ff;--muted:#9db2d3;--green:#30dfa0;--red:#ff647c}
+
+*{box-sizing:border-box}
+
+body{margin:0;background:radial-gradient(ellipse at top,#102a52 0,#061126 55%,#030916 100%);color:var(--text);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:16px 13px 32px}
+
+.wrap{max-width:620px;margin:auto}
+
+.top{display:flex;align-items:center;gap:12px;margin:5px 0 18px}
+
+.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#1b8cff,#33e0ff);display:grid;place-items:center;color:#03122b;font-size:23px;font-weight:900;box-shadow:0 0 22px #168dff44}
+
+.brand{font-weight:800;font-size:19px;letter-spacing:.3px}
+
+.sub{font-size:11px;color:var(--muted);margin-top:3px;letter-spacing:1.3px}
+
+.pill{margin-left:auto;border:1px solid #2d956e;color:#63f0b6;background:#0b352e;padding:7px 9px;border-radius:20px;font-size:11px;white-space:nowrap}
+
+.card{background:linear-gradient(145deg,#0d2041,#091832);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 10px 25px #0002}
+
+.section{font-weight:750;font-size:14px;margin:0 0 13px;display:flex;align-items:center;gap:8px}
+
+.dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+
+.field label{display:block;color:var(--muted);font-size:12px;margin:0 0 7px}
+
+.field select,.field input{width:100%;border:1px solid #28466f;background:#07152c;color:var(--text);border-radius:11px;padding:12px 10px;font-size:14px;outline:none}
+
+.full{grid-column:1/-1}
+
+button{font:inherit;border:0;cursor:pointer;touch-action:manipulation}
+
+.primary{width:100%;border-radius:13px;padding:15px;background:linear-gradient(90deg,#1b73ff,#19bde9);color:white;font-weight:800;font-size:15px;box-shadow:0 8px 20px #087cff35;margin-top:14px}
+
+.voice{width:100%;border-radius:13px;padding:14px;background:#10284b;border:1px solid #2a6a9d;color:#a9eaff;font-weight:750;margin-top:10px}
+
+.voice.listening{background:#153b50;border-color:var(--cyan);box-shadow:0 0 18px #39d7ff35}
+
+.smallbtn{padding:10px 12px;border-radius:10px;background:#142b50;border:1px solid #2a4772;color:var(--text);font-size:12px}
+
+.status{font-size:12px;color:var(--muted);line-height:1.5;margin-top:10px}
+
+.signalbox{border:1px solid #25446f;border-radius:14px;padding:14px;background:#07162d;min-height:104px}
+
+.signalhead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+
+.tag{font-size:10px;padding:5px 8px;border-radius:20px;background:#1b3152;color:#bed8ff}
+
+.signal-title{font-size:21px;font-weight:850;margin:10px 0 5px}
+
+.neutral{color:#dbe7fa}
+
+.up{color:var(--green)}
+
+.down{color:var(--red)}
+
+.history{font-size:12px;color:var(--muted);line-height:1.7;white-space:pre-line}
+
+.voicechat{display:flex;gap:8px;margin-top:10px}
+
+.voicechat input{min-width:0;flex:1;border:1px solid #28466f;background:#07152c;color:var(--text);border-radius:11px;padding:12px}
+
+.note{border-left:3px solid #eab34e;padding:10px 12px;color:#c8d5e8;font-size:11px;line-height:1.55;background:#201d19;border-radius:0 9px 9px 0}
+
+.footer{text-align:center;color:#7389ab;font-size:10px;margin:18px 0 4px}
+
+@media(max-width:360px){body{padding:11px 9px}.card{padding:13px}.grid{gap:8px}.brand{font-size:17px}}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="wrap">
+
+<header class="top">
+
+  <div class="logo">✦</div>
+
+  <div>
+
+    <div class="brand">AI SIGNAL SCANNER</div>
+
+    <div class="sub">MOBILE TRADING BOARD</div>
+
+  </div>
+
+  <div class="pill">● BOARD READY</div>
+
+</header>
+
+<section class="card">
+
+  <h2 class="section"><span class="dot"></span> Trading Setup</h2>
+
+  <div class="grid">
+
+    <div class="field">
+
+      <label for="platform">Platform</label>
+
+      <select id="platform">
+
+        <option>Pocket Option</option>
+
+        <option>Olymp Trade</option>
+
+      </select>
+
+    </div>
+
+    <div class="field">
+
+      <label for="marketType">Market Type</label>
+
+      <select id="marketType">
+
+        <option>Normal</option>
+
+        <option>OTC</option>
+
+      </select>
+
+    </div>
+
+    <div class="field">
+
+      <label for="pair">Currency Pair</label>
+
+      <select id="pair">
+
+        <option>EUR/USD</option>
+
+        <option>GBP/USD</option>
+
+        <option>USD/JPY</option>
+
+        <option>AUD/USD</option>
+
+        <option>USD/CAD</option>
+
+        <option>EUR/JPY</option>
+
+        <option>GBP/JPY</option>
+
+        <option>NZD/USD</option>
+
+        <option>EUR/GBP</option>
+
+        <option>USD/CHF</option>
+
+        <option>EUR/USD OTC</option>
+
+        <option>GBP/USD OTC</option>
+
+        <option>USD/JPY OTC</option>
+
+        <option>AUD/USD OTC</option>
+
+        <option>USD/CAD OTC</option>
+
+      </select>
+
+    </div>
+
+    <div class="field">
+
+      <label for="expiry">Expiry / Timeframe</label>
+
+      <select id="expiry">
+
+        <option>10 seconds</option>
+
+        <option>15 seconds</option>
+
+        <option>30 seconds</option>
+
+        <option>1 minute</option>
+
+        <option>2 minutes</option>
+
+        <option>5 minutes</option>
+
+        <option>15 minutes</option>
+
+        <option>1 hour</option>
+
+      </select>
+
+    </div>
+
+    <div class="field full">
+
+      <label for="language">Voice Language</label>
+
+      <select id="language">
+
+        <option value="en-US">English</option>
+
+        <option value="hi-IN">Hindi</option>
+
+        <option value="ur-PK">Urdu</option>
+
+      </select>
+
+    </div>
+
+  </div>
+
+  <button class="primary" id="generate">⚡ Generate Signal</button>
+
+  <button class="voice" id="voice">🎙️ Voice Assistant — Tap to Speak</button>
+
+  <div class="status" id="voiceStatus">
+
+    Voice control depends on browser speech support and microphone permission.
+
+  </div>
+
+</section>
+
+<section class="card">
+
+  <h2 class="section"><span class="dot"></span> Signal Result</h2>
+
+  <div class="signalbox" aria-live="polite">
+
+    <div class="signalhead">
+
+      <span class="tag" id="signalPair">EUR/USD · NORMAL</span>
+
+      <span class="tag">DEMO MODE</span>
+
+    </div>
+
+    <div class="signal-title neutral" id="signalTitle">Waiting for analysis</div>
+
+    <div class="status" id="signalReason">
+
+      Choose your settings and tap Generate Signal.
+
+    </div>
+
+  </div>
+
+  <div class="status">
+
+    Market connection:
+
+    <strong style="color:#ffd27b">Not connected</strong>.
+
+    This page does not receive verified live prices.
+
+  </div>
+
+</section>
+
+<section class="card">
+
+  <h2 class="section"><span class="dot"></span> Talk to Assistant</h2>
+
+  <div class="status">
+
+    Ask about the controls or the current board settings.
+
+    Without an AI service connection, answers are limited to built-in help.
+
+  </div>
+
+  <div class="voicechat">
+
+    <input id="question" type="text" placeholder="Type a question…" aria-label="Question">
+
+    <button class="smallbtn" id="ask">Ask</button>
+
+  </div>
+
+  <div class="status" id="answer" aria-live="polite">Assistant is ready.</div>
+
+</section>
+
+<section class="card">
+
+  <h2 class="section"><span class="dot"></span> Signal History</h2>
+
+  <div class="history" id="history">No signals generated in this session.</div>
+
+</section>
+
+<div class="note">
+
+  <strong>Important:</strong> This is a front-end demo, not a live trading service.
+
+  Signals shown here are illustrative only and must not be used as real trading advice.
+
+  Pocket Option and Olymp Trade are not connected; OTC prices may differ from external
+
+  market feeds. No accuracy or profit is guaranteed.
+
+</div>
+
+<div class="footer">AI SIGNAL SCANNER · MOBILE DEMO · NO BROKER LOGIN REQUIRED</div>
+
+</div>
+
+<script>
+
+const $ = id => document.getElementById(id);
+
+function speak(text) {
+
+  if (!("speechSynthesis" in window)) {
+
+    $("voiceStatus").textContent =
+
+      "Speech output is not supported in this browser.";
+
+    return;
+
+  }
+
+  speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+
+  utterance.lang = $("language").value;
+
+  speechSynthesis.speak(utterance);
+
+}
+
+function selected() {
+
+  return {
+
+    platform: $("platform").value,
+
+    type: $("marketType").value,
+
+    pair: $("pair").value,
+
+    expiry: $("expiry").value
+
+  };
+
+}
+
+$("generate").addEventListener("click", () => {
+
+  const s = selected();
+
+  $("signalPair").textContent =
+
+    s.pair + " · " + s.type.toUpperCase();
+
+  $("signalTitle").textContent = "DEMO ONLY — No live signal";
+
+  $("signalTitle").className = "signal-title neutral";
+
+  $("signalReason").textContent =
+
+    "Live price feed is not connected, so a reliable BUY/SELL analysis cannot be calculated. Connect a verified data provider before using market analysis.";
+
+  const time = new Date().toLocaleTimeString();
+
+  const item = `${time} — ${s.platform} — ${s.pair} (${s.type}), ${s.expiry}: demo only`;
+
+  const old = $("history").textContent;
+
+  $("history").textContent =
+
+    old === "No signals generated in this session."
+
+      ? item
+
+      : item + "\n" + old;
+
+  speak(
+
+    "Demo mode. Live market data is not connected. I cannot provide a verified buy or sell signal."
+
+  );
+
+});
+
+function answer(question) {
+
+  const q = question.toLowerCase();
+
+  const s = selected();
+
+  if (/pair|currency|पेयर|جوड़ा/.test(q))
+
+    return "The selected pair is " + s.pair + ".";
+
+  if (/platform|प्लेटफॉर्म|پلیٹ فارم/.test(q))
+
+    return "The selected platform is " + s.platform + ".";
+
+  if (/expiry|timeframe|टाइम|समय|ایکسپائری/.test(q))
+
+    return "The selected expiry is " + s.expiry + ".";
+
+  if (/otc|normal|market type/.test(q))
+
+    return "The selected market type is " + s.type + ".";
+
+  if (/signal|buy|sell|सिग्नल|خرید|فروخت/.test(q))
+
+    return "This board is not connected to live market data. I cannot verify a real buy or sell signal.";
+
+  if (/hello|hi|नमस्ते|सलाम|السلام/.test(q))
+
+    return "Hello! I am the board assistant. You can ask me about the selected platform, pair, market type, or expiry.";
+
+  return "I can explain this board and its selected settings. Full open-ended AI conversation requires connecting a secure AI backend.";
+
+}
+
+$("ask").addEventListener("click", () => {
+
+  const question = $("question").value.trim();
+
+  if (!question) return;
+
+  const response = answer(question);
+
+  $("answer").textContent = response;
+
+  speak(response);
+
+});
+
+$("question").addEventListener("keydown", event => {
+
+  if (event.key === "Enter") $("ask").click();
+
+});
+
+$("voice").addEventListener("click", () => {
+
+  const Recognition =
+
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!Recognition) {
+
+    $("voiceStatus").textContent =
+
+      "Speech recognition is unavailable in this browser. Try a supported browser or use the text question box.";
+
+    speak(
+
+      "Speech recognition is unavailable. You can type your question in the question box."
+
+    );
+
+    return;
+
+  }
+
+  const recognition = new Recognition();
+
+  recognition.lang = $("language").value;
+
+  recognition.interimResults = false;
+
+  recognition.maxAlternatives = 1;
+
+  $("voice").classList.add("listening");
+
+  $("voiceStatus").textContent = "Listening… Please speak now.";
+
+  recognition.onresult = event => {
+
+    const question = event.results[0][0].transcript;
+
+    $("question").value = question;
+
+    const response = answer(question);
+
+    $("answer").textContent =
+
+      "You asked: " + question + " — " + response;
+
+    $("voiceStatus").textContent = "Voice question received.";
+
+    speak(response);
+
+  };
+
+  recognition.onerror = event => {
+
+    $("voiceStatus").textContent =
+
+      "Microphone or speech error: " + event.error +
+
+      ". Check browser permission and try again.";
+
+  };
+
+  recognition.onend = () => {
+
+    $("voice").classList.remove("listening");
+
+  };
+
+  try {
+
+    recognition.start();
+
+  } catch (error) {
+
+    $("voiceStatus").textContent =
+
+      "Could not start listening. Please try again.";
+
+    $("voice").classList.remove("listening");
+
+  }
+
+});
+
+</script>
+
+</body>
+
+</html>
